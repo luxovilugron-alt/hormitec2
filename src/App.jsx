@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 
-const ANTHROPIC_KEY = import.meta.env.VITE_ANTHROPIC_KEY
+const KEY = import.meta.env.VITE_ANTHROPIC_KEY
 
 const zonas = [
   { value: 'costa', label: 'Costa / Zona normal' },
@@ -54,9 +54,9 @@ export default function App() {
 
   const calcularVolumen = () => {
     const l = parseFloat(largo) || 0
-    const a = parseFloat(ancho) || 0
     const e = parseFloat(espesor) / 100 || 0
     const h = parseFloat(altura) || 0
+    const a = parseFloat(ancho) || 0
     if (modulo === 'muro') return (l * h * e * 1.05).toFixed(2)
     return (l * a * e * 1.05).toFixed(2)
   }
@@ -96,10 +96,13 @@ Responde SOLO con este formato JSON, sin texto adicional ni markdown:
 }`
 
     try {
-      const res = await fetch ('/api/chat', {  
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-api-key': KEY,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-client-side-api-key-flag': 'true',
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
@@ -124,136 +127,142 @@ Responde SOLO con este formato JSON, sin texto adicional ni markdown:
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
   }
 
-  const s = {
-    app: { minHeight: '100vh', background: '#f0ede8', fontFamily: "'Segoe UI', sans-serif" },
-    header: { background: '#1a1a2e', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 12 },
-    logo: { background: '#e8a020', borderRadius: 8, width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#fff', fontSize: 20 },
-    titulo: { color: '#fff', fontWeight: 'bold', fontSize: 22, letterSpacing: 1 },
-    subtitulo: { color: '#aaa', fontSize: 13 },
-    wrap: { maxWidth: 520, margin: '28px auto', padding: '0 16px' },
-    card: { background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', marginBottom: 20 },
-    label: { fontSize: 13, color: '#555', display: 'block', marginBottom: 5, fontWeight: '500' },
-    input: { width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #ddd', fontSize: 15, marginBottom: 14, boxSizing: 'border-box' },
-    select: { width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #ddd', fontSize: 15, marginBottom: 14, boxSizing: 'border-box', background: '#fff' },
-    grid2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 },
-    btnPrimary: { width: '100%', padding: 14, background: '#e8a020', border: 'none', borderRadius: 10, color: '#fff', fontWeight: 'bold', fontSize: 16, cursor: 'pointer', marginTop: 4 },
-    btnWsp: { width: '100%', padding: 13, background: '#25D366', border: 'none', borderRadius: 10, color: '#fff', fontWeight: 'bold', fontSize: 15, cursor: 'pointer', marginTop: 12 },
-    fichaHeader: { color: '#e8a020', margin: '0 0 16px', fontSize: 15, textTransform: 'uppercase', letterSpacing: 1 },
-    fichaRow: { display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #ffffff15', paddingBottom: 9, marginBottom: 9 },
-    fichaLabel: { color: '#aaa', fontSize: 14 },
-    fichaValor: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
-    obs: { background: '#ffffff12', borderRadius: 8, padding: 12, marginTop: 12, color: '#ccc', fontSize: 13, lineHeight: 1.5 },
-    hint: { fontSize: 12, color: '#999', marginTop: -10, marginBottom: 14, lineHeight: 1.5 },
-    tabs: { display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' },
-    tab: (active) => ({ padding: '8px 14px', borderRadius: 20, border: `2px solid ${active ? '#e8a020' : '#ddd'}`, background: active ? '#e8a020' : '#fff', color: active ? '#fff' : '#555', fontWeight: active ? 'bold' : 'normal', cursor: 'pointer', fontSize: 14 }),
+  const selectStyle = {
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: 8,
+    border: '1px solid #ddd',
+    fontSize: 15,
+    marginBottom: 14,
+    boxSizing: 'border-box',
+    background: '#fff',
+    color: '#1a1a2e',
+    appearance: 'auto',
+  }
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: 8,
+    border: '1px solid #ddd',
+    fontSize: 15,
+    marginBottom: 14,
+    boxSizing: 'border-box',
+    background: '#fff',
+    color: '#1a1a2e',
   }
 
   return (
-    <div style={s.app}>
-      <div style={s.header}>
-        <div style={s.logo}>H</div>
+    <div style={{ minHeight: '100vh', background: '#f0ede8', fontFamily: "'Segoe UI', sans-serif" }}>
+      <div style={{ background: '#1a1a2e', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ background: '#e8a020', borderRadius: 8, width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#fff', fontSize: 20 }}>H</div>
         <div>
-          <div style={s.titulo}>HORMITEC</div>
-          <div style={s.subtitulo}>Ficha técnica de hormigón con IA</div>
+          <div style={{ color: '#fff', fontWeight: 'bold', fontSize: 22, letterSpacing: 1 }}>HORMITEC</div>
+          <div style={{ color: '#aaa', fontSize: 13 }}>Ficha técnica de hormigón con IA</div>
         </div>
       </div>
 
-      <div style={s.wrap}>
+      <div style={{ maxWidth: 520, margin: '28px auto', padding: '0 16px' }}>
 
-        {/* Selector de módulo */}
-        <div style={s.tabs}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
           {modulos.map(m => (
-            <button key={m.value} style={s.tab(modulo === m.value)} onClick={() => setModulo(m.value)}>
+            <button key={m.value}
+              onClick={() => setModulo(m.value)}
+              style={{
+                padding: '8px 14px', borderRadius: 20,
+                border: `2px solid ${modulo === m.value ? '#e8a020' : '#ddd'}`,
+                background: modulo === m.value ? '#e8a020' : '#fff',
+                color: modulo === m.value ? '#fff' : '#555',
+                fontWeight: modulo === m.value ? 'bold' : 'normal',
+                cursor: 'pointer', fontSize: 14
+              }}>
               {m.label}
             </button>
           ))}
         </div>
 
-        {/* Formulario */}
-        <div style={s.card}>
+        <div style={{ background: '#fff', borderRadius: 16, padding: 24, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', marginBottom: 20 }}>
           <h2 style={{ margin: '0 0 18px', fontSize: 17, color: '#1a1a2e' }}>Datos de la obra</h2>
 
-          <div style={s.grid2}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={s.label}>Largo (m)</label>
-              <input style={s.input} type="number" placeholder="Ej: 10" value={largo} onChange={e => setLargo(e.target.value)} />
+              <label style={{ fontSize: 13, color: '#555', display: 'block', marginBottom: 4 }}>Largo (m)</label>
+              <input style={inputStyle} type="number" placeholder="Ej: 10" value={largo} onChange={e => setLargo(e.target.value)} />
             </div>
-            <div>
-              <label style={s.label}>Ancho (m)</label>
-              <input style={s.input} type="number" placeholder="Ej: 8" value={ancho} onChange={e => setAncho(e.target.value)} />
-            </div>
+            {modulo !== 'muro' && (
+              <div>
+                <label style={{ fontSize: 13, color: '#555', display: 'block', marginBottom: 4 }}>Ancho (m)</label>
+                <input style={inputStyle} type="number" placeholder="Ej: 8" value={ancho} onChange={e => setAncho(e.target.value)} />
+              </div>
+            )}
           </div>
 
-          <div style={s.grid2}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={s.label}>Espesor (cm)</label>
-              <input style={s.input} type="number" placeholder="Ej: 10" value={espesor} onChange={e => setEspesor(e.target.value)} />
+              <label style={{ fontSize: 13, color: '#555', display: 'block', marginBottom: 4 }}>Espesor (cm)</label>
+              <input style={inputStyle} type="number" placeholder="Ej: 10" value={espesor} onChange={e => setEspesor(e.target.value)} />
             </div>
             {modulo === 'muro' && (
               <div>
-                <label style={s.label}>Altura muro (m)</label>
-                <input style={s.input} type="number" placeholder="Ej: 2.4" value={altura} onChange={e => setAltura(e.target.value)} />
+                <label style={{ fontSize: 13, color: '#555', display: 'block', marginBottom: 4 }}>Altura muro (m)</label>
+                <input style={inputStyle} type="number" placeholder="Ej: 2.4" value={altura} onChange={e => setAltura(e.target.value)} />
               </div>
             )}
           </div>
 
           {modulo === 'muro' && (
             <>
-              <label style={s.label}>Enfierradura (indicada por calculista)</label>
-              <input style={s.input} type="text" placeholder="Ej: barras 12mm cada 20cm" value={enfierradura} onChange={e => setEnfierradura(e.target.value)} />
-              <p style={s.hint}>Indica el diámetro y espaciado tal como te lo entregó el calculista. Hormitec ajustará el árido máximo para que pase entre las barras.</p>
+              <label style={{ fontSize: 13, color: '#555', display: 'block', marginBottom: 4 }}>Enfierradura (indicada por calculista)</label>
+              <input style={inputStyle} type="text" placeholder="Ej: barras 12mm cada 20cm" value={enfierradura} onChange={e => setEnfierradura(e.target.value)} />
+              <p style={{ fontSize: 12, color: '#999', marginTop: -10, marginBottom: 14 }}>Indica el diámetro y espaciado. Hormitec ajustará el árido máximo para que pase entre las barras.</p>
             </>
           )}
 
-          <div style={s.grid2}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={s.label}>Resistencia (MPa)</label>
-              <input style={s.input} type="number" placeholder="Ej: 25" value={mpa} onChange={e => setMpa(e.target.value)} />
+              <label style={{ fontSize: 13, color: '#555', display: 'block', marginBottom: 4 }}>Resistencia (MPa)</label>
+              <input style={inputStyle} type="number" placeholder="Ej: 25" value={mpa} onChange={e => setMpa(e.target.value)} />
             </div>
             <div>
-              <label style={s.label}>¿Bombeable?</label>
-              <select style={s.select} value={bombeable} onChange={e => setBombeable(e.target.value)}>
+              <label style={{ fontSize: 13, color: '#555', display: 'block', marginBottom: 4 }}>¿Bombeable?</label>
+              <select style={selectStyle} value={bombeable} onChange={e => setBombeable(e.target.value)}>
                 <option value="no">No</option>
                 <option value="si">Sí</option>
               </select>
             </div>
           </div>
 
-          <label style={s.label}>Zona geográfica</label>
-          <select style={s.select} value={zona} onChange={e => setZona(e.target.value)}>
+          <label style={{ fontSize: 13, color: '#555', display: 'block', marginBottom: 4 }}>Zona geográfica</label>
+          <select style={selectStyle} value={zona} onChange={e => setZona(e.target.value)}>
             {zonas.map(z => <option key={z.value} value={z.value}>{z.label}</option>)}
           </select>
 
-          {/* Campo IA */}
-          <label style={s.label}>Describe tu situación a la IA 🤖</label>
+          <label style={{ fontSize: 13, color: '#555', display: 'block', marginBottom: 4 }}>Describe tu situación a la IA 🤖</label>
           <div style={{ position: 'relative', marginBottom: 6 }}>
             <textarea
-              style={{ ...s.input, height: 100, resize: 'vertical', marginBottom: 0, paddingRight: 44 }}
+              style={{ ...inputStyle, height: 100, resize: 'vertical', marginBottom: 0, paddingRight: 44 }}
               placeholder="Cuéntanos sobre tu obra..."
               value={descripcion}
               onChange={e => setDescripcion(e.target.value)}
             />
-            <button
-              onClick={iniciarMicrofono}
-              style={{ position: 'absolute', right: 10, top: 10, background: escuchando ? '#e8a020' : '#f0ede8', border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontSize: 18 }}
-              title="Hablar"
-            >
+            <button onClick={iniciarMicrofono}
+              style={{ position: 'absolute', right: 10, top: 10, background: escuchando ? '#e8a020' : '#f0ede8', border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontSize: 18 }}>
               {escuchando ? '🔴' : '🎙️'}
             </button>
           </div>
-          <p style={s.hint}>
-            Para mejores resultados menciona: tipo de estructura · cómo se vaciará el hormigón (bomba, canaleta, balde) · si hay exposición a humedad, sulfatos, hielo o agua de mar · si el ambiente es agresivo · si hay árido máximo restringido por la enfierradura · fecha estimada de hormigonado.
+          <p style={{ fontSize: 12, color: '#999', marginBottom: 14, lineHeight: 1.5 }}>
+            Para mejores resultados menciona: tipo de estructura · cómo se vaciará el hormigón (bomba, canaleta, balde) · exposición a humedad, sulfatos, hielo o agua de mar · ambiente agresivo · árido máximo restringido por enfierradura · fecha estimada de hormigonado.
           </p>
 
-          <button style={s.btnPrimary} onClick={generarFicha} disabled={cargando}>
+          <button onClick={generarFicha} disabled={cargando}
+            style={{ width: '100%', padding: 14, background: '#e8a020', border: 'none', borderRadius: 10, color: '#fff', fontWeight: 'bold', fontSize: 16, cursor: 'pointer' }}>
             {cargando ? '⏳ Generando ficha...' : '⚡ Generar Ficha Técnica con IA'}
           </button>
         </div>
 
-        {/* Resultado */}
         {resultado && (
-          <div style={{ ...s.card, background: '#1a1a2e' }}>
-            <h3 style={s.fichaHeader}>📋 Ficha de Pedido — Hormitec</h3>
+          <div style={{ background: '#1a1a2e', borderRadius: 16, padding: 24, boxShadow: '0 2px 12px rgba(0,0,0,0.12)' }}>
+            <h3 style={{ color: '#e8a020', margin: '0 0 16px', fontSize: 15, textTransform: 'uppercase', letterSpacing: 1 }}>📋 Ficha de Pedido</h3>
             {[
               ['Grado', resultado.grado],
               ['Resistencia', resultado.mpa],
@@ -263,21 +272,21 @@ Responde SOLO con este formato JSON, sin texto adicional ni markdown:
               ['Volumen a pedir', resultado.volumen],
               ['Aditivos', resultado.aditivos],
             ].map(([label, valor]) => (
-              <div key={label} style={s.fichaRow}>
-                <span style={s.fichaLabel}>{label}</span>
-                <span style={s.fichaValor}>{valor}</span>
+              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #ffffff15', paddingBottom: 9, marginBottom: 9 }}>
+                <span style={{ color: '#aaa', fontSize: 14 }}>{label}</span>
+                <span style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>{valor}</span>
               </div>
             ))}
-            <div style={s.obs}>
+            <div style={{ background: '#ffffff12', borderRadius: 8, padding: 12, marginTop: 12, color: '#ccc', fontSize: 13, lineHeight: 1.5 }}>
               <strong style={{ color: '#e8a020' }}>Observaciones NCh170:</strong><br />
               {resultado.observaciones}
             </div>
-            <button style={s.btnWsp} onClick={enviarWhatsApp}>
+            <button onClick={enviarWhatsApp}
+              style={{ width: '100%', marginTop: 16, padding: 13, background: '#25D366', border: 'none', borderRadius: 10, color: '#fff', fontWeight: 'bold', fontSize: 15, cursor: 'pointer' }}>
               📲 Enviar por WhatsApp a la planta
             </button>
           </div>
         )}
-
       </div>
     </div>
   )
