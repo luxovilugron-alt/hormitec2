@@ -96,7 +96,7 @@ Responde SOLO con este formato JSON, sin texto adicional ni markdown:
 }`
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
