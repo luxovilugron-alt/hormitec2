@@ -19,4 +19,4 @@ const handler = async (req, res) => {
   res.status(response.status).json(data)
 }
 
-module.exports = handler
+export default handler
